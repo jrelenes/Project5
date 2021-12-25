@@ -1,0 +1,291 @@
+<!-- https://bl.ocks.org/alokkshukla/3d6be4be0ef9f6977ec6718b2916d168 -->
+<!-- https://bl.ocks.org/d3noob/bdf28027e0ce70bd132edc64f1dd7ea4 -->
+
+<!-- https://cookpolitical.com/2020-national-popular-vote-tracker -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+		<title>CSE 578 Homework #5: Jose Rosario Elenes Cazares</title>
+	</head>
+	<style>
+		.container {
+			max-width: 970px;
+			/* fill: steelblue; */
+			font-family:cursive;
+		}
+		h2, h3, h4, span {
+			text-align: center;
+		}
+		
+		p {
+			text-align: justify;
+			text-justify: inter-word;
+		}
+		.left {
+        text-align: left;
+        float: left;
+        clear: none;
+        width: 50%;
+		}
+		.right {
+			text-align: right;
+			float: right;
+			clear: none;
+			width: 50%;
+			
+			/* position: absolute;
+   			right: 300 px; */
+		}
+
+		.bar { fill: steelblue; }
+
+		/* body {
+		background-image: url('f.jpg'); */
+		/* background-repeat: repeat-y; */
+		/* text-align: center;
+			float: center;
+			clear: none; */
+			/* width: 100%; */
+			/* background-position: 200px 70px; */
+  			/* background-size: contain; */
+
+		/* } */
+		body, html {
+		height: 100%;
+		}
+
+		body {
+		/* The image used */
+		background-image: url("images/f.jpg");
+		/* background-repeat: repeat-y; */
+
+
+		/* Full height */
+		height: 100%;
+		
+		
+
+
+		/* Center and scale the image nicely */
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		}
+
+
+	</style>
+    <body>
+	    <div class="container">
+			<header>
+				<h2 style="color: steelblue; font-family:cursive;">Homework #5 - Argumentative Vis</h2>
+				<h3 style="color: steelblue; font-family:cursive;">Jose Rosario Elenes Cazares&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; November 30, 2021</h3>
+			</header>
+			<!-- <hr> -->
+
+			<!-- <img src="imgs/Screenshot_2021-09-02 Novel Coronavirus (COVID-19).png" alt="The cool visualization example that I found!"> -->
+			
+			<!-- <hr> -->
+			<h4 style="color: steelblue; font-family:cursive;">2020 US Elections | Presidential Election Results</h4>
+			<div style="width:100%;text-align:center;">
+				<a href="https://cookpolitical.com/2020-national-popular-vote-tracker" target="_blank">https://cookpolitical.com/2020-national-popular-vote-tracker</a></div>
+
+			<p style="font-family:cursive;">
+				<!-- <b> -->
+				In the presidential elections of 2020 President Joe Biden and Donald Trump were running for president. After election results were finalized claims of fraud 
+				were made to the public. My intent is not prove or disapprove the the topic but to provide visual aid to understand the conflict of voter fraud. The voter base of the republican
+				party were not content with the results and this lead to violence in the capital. The democrats took a neutral approach while incitation by the republican nominee Donald Trump. Both parties had 
+				marginal chances with the popular vote. In figure 1 it is shown that the chance of winning the white house could have shifted in either direction. However, people of color that account
+				for a small percentage of votes had a significant effect related to the electoral vote. States such as California having higher electoral votes and other states
+				where electoral vote allocated was higher shifted to the democratic nominee. Population density and people of color contributed to the shift of public opinion.
+			<!-- </b> -->
+			</p>
+
+			<div class="wrap">
+				<div class='left'>
+
+
+					<script>
+
+
+						// set the dimensions and margins of the graph
+						var margin = {top: 30, right: 30, bottom: 70, left: 60},
+							width = 460 - margin.left - margin.right,
+							height = 400 - margin.top - margin.bottom;
+						
+						// append the svg object to the body of the page
+						var svg1 = d3.select(".left")
+						  .append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+						  .append("g")
+							.attr("transform",
+								  "translate(" + margin.left + "," + margin.top + ")");
+						
+						// Parse the Data
+						d3.csv("data/votes.csv").then( function(data) {
+					  
+					  
+						  data1 = []
+						  console.log(data[0])
+						  total = parseInt(data[0].dem_votes.split(',').join("")) + parseInt(data[0].rep_votes.split(',').join("")) + parseInt(data[0].other_votes.split(',').join(""))
+						  console.log(total,"total")
+
+						  data1.push({'party': 'democrats', 'votes': parseInt(data[0].dem_votes.split(',').join("")) / total, 'color':'blue'})
+						  data1.push({'party': 'republicans', 'votes': parseInt(data[0].rep_votes.split(',').join("")) / total, 'color': 'red'})
+					  
+						
+						// X axis
+						var x1 = d3.scaleBand()
+						  .range([ 0, width ])
+						  .domain(data1.map(function(d) { return d.party; }))
+						  .padding(0.2);
+						svg1.append("g")
+						  .attr("transform", "translate(0," + height + ")")
+						  .call(d3.axisBottom(x1))
+						  .selectAll("text")
+							.attr("transform", "translate(-10,0)rotate(-45)")
+							.style("text-anchor", "end");
+						
+						// Add Y axis
+						var y1 = d3.scaleLinear()
+						  .domain([0, data1[0].votes])
+						  .range([ height, 0]);
+						svg1.append("g")
+						  .call(d3.axisLeft(y1));
+
+
+						svg1.append("text")
+							.attr("x", (width / 2))             
+							.attr("y", 0 - (margin.top / 2))
+							.attr("text-anchor", "middle")  
+							.style("font-size", "16px") 
+							.style("text-decoration", "underline")  
+							.text("Popularity Vote");
+
+						 
+						
+						// Bars
+						svg1.selectAll("mybar1")
+						  .data(data1)
+						  .enter()
+						  .append("rect")
+							.attr("x", function(d) { return x1(d.party); })
+							.attr("y", function(d) { return y1(d.votes); })
+							.attr("width", x1.bandwidth())
+							.attr("height", function(d) { return height - y1(d.votes); })
+							.attr("fill", function(d){return d.color})
+						
+						})
+						
+						</script>
+
+
+
+				</div> 
+				
+				
+				
+				<div class='right'>
+
+
+					<script>
+
+
+						// set the dimensions and margins of the graph
+						var margin = {top: 30, right: 30, bottom: 70, left: 60},
+							width = 460 - margin.left - margin.right,
+							height = 400 - margin.top - margin.bottom;
+						
+						// append the svg object to the body of the page
+						var svg2 = d3.select(".right")
+						  .append("svg")
+							.attr("width", width + margin.left + margin.right)
+							.attr("height", height + margin.top + margin.bottom)
+						  .append("g")
+							.attr("transform",
+								  "translate(" + margin.left + "," + margin.top + ")");
+						
+						// Parse the Data
+						d3.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vS3Z8Rq9xqOLISwoKdK0n6CFLBuPSCoXbbLeY8vhi-rzFS3ZFNEtR0BCdEbHcS-2Tlh5aPcnZbwBLao/pub?output=csv").then( function(data) {
+					  
+					  
+						  data1 = data.slice(4, data.length);
+					  
+						  DemCount = 0
+						  RepCount = 0
+						  data.forEach(element => {
+					  
+							  if(element.called == 'D'){
+					  
+								DemCount += +element.EV
+					  
+							  }
+							  else{
+					  
+								RepCount += +element.EV
+					  
+							  }
+							
+						  });
+					  
+						  console.log(DemCount)
+						  console.log(parseInt(DemCount))
+						  data2 = []
+						  data2.push({'party': 'democrats', 'votes': parseInt(DemCount), 'color':'blue'})
+						  data2.push({'party': 'republicans', 'votes': parseInt(RepCount), 'color':'red'})
+					  
+						  console.log(data1)
+						
+						// X axis
+						var x2 = d3.scaleBand()
+						  .range([ 0, width ])
+						  .domain(data2.map(function(d) { return d.party; }))
+						  .padding(0.2);
+						svg2.append("g")
+						  .attr("transform", "translate(0," + height + ")")
+						  .call(d3.axisBottom(x2))
+						  .selectAll("text")
+							.attr("transform", "translate(-10,0)rotate(-45)")
+							.style("text-anchor", "end");
+						
+						// Add Y axis
+						var y2 = d3.scaleLinear()
+						  .domain([0,data2[0].votes])
+						  .range([ height, 0]);
+						svg2.append("g")
+						  .call(d3.axisLeft(y2));
+
+						
+						  svg2.append("text")
+							.attr("x", (width / 2))             
+							.attr("y", 0 - (margin.top / 2))
+							.attr("text-anchor", "middle")  
+							.style("font-size", "16px") 
+							.style("text-decoration", "underline")  
+							.text("Electoral Vote");
+						
+						// Bars
+						svg2.selectAll("mybar2")
+						  .data(data2)
+						  .enter()
+						  .append("rect")
+							.attr("x", function(d) { return x2(d.party); })
+							.attr("y", function(d) { return y2(d.votes); })
+							.attr("width", x2.bandwidth())
+							.attr("height", function(d) { return height - y2(d.votes); })
+							.attr("fill", function(d) {return d.color})
+						
+						})
+						
+						</script>
+
+
+
+				</div>
+			</div>
+			
+		</div>
+	</body>
+</html>
